@@ -7,17 +7,37 @@ class MoviesController < ApplicationController
   end
 
   def index
-    if (params.has_key?(:order))
-      if (params[:order] == 'byTitle' )
-        @movies = Movie.find(:all, :order => 'title ASC')
-        @title_header = 'hilite'
-      elsif (params[:order] == 'byDate')
-        @movies = Movie.find(:all, :order => 'release_date ASC')
-        @release_header = 'hilite'
+   
+    @movies = []
+    @all_ratings = Movie.all.map(&:rating).uniq
+    @rating_hash_container = []
+
+    if (params.has_key?(:ratings))
+      @all_ratings.each do |rating|
+        @rating_hash_container << {:rating => rating, :rating_selected => params[:ratings].keys.include?(rating)}
+      end
+      params[:ratings].each do |r|
+        @movies += Movie.where("rating = ?", r[0])
       end
     else
       @movies = Movie.all
+      @all_ratings.each do |rating|
+        @rating_hash_container << {:rating => rating, :rating_selected => false}
+      end
     end
+
+    if (params.has_key?(:order))
+      if (params[:order] == 'byTitle' )
+        @movies = @movies.sort_by!{ |x| x.title }
+        @title_header = 'hilite'
+      elsif (params[:order] == 'byDate')
+        @movies = @movies.sort_by!{ |x| x.release_date }
+        @release_header = 'hilite'
+      end
+    end
+    
+    @title_path = request.query_parameters.merge({:order=>"byTitle"})
+    @release_path = request.query_parameters.merge({:order=>"byDate"})
   end
 
   def new
