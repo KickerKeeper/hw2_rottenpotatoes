@@ -7,10 +7,27 @@ class MoviesController < ApplicationController
   end
 
   def index
-   
+    
+    if (session.has_key?(:ratings))
+      if (params.has_key?(:ratings))
+        session[:ratings] = params[:ratings]
+      else
+        params[:ratings] = session[:ratings]
+      end
+    end 
+
+    if (session.has_key?(:order))
+      if (params.has_key?(:order))
+        session[:order] = params[:order]
+      else
+        params[:order] = session[:order]
+      end
+    end
+
     @movies = []
     @all_ratings = Movie.all.map(&:rating).uniq
     @rating_hash_container = []
+
 
     if (params.has_key?(:ratings))
       @all_ratings.each do |rating|
@@ -35,6 +52,8 @@ class MoviesController < ApplicationController
         @release_header = 'hilite'
       end
     end
+
+    @temp = session[:ratings]
     
     @title_path = request.query_parameters.merge({:order=>"byTitle"})
     @release_path = request.query_parameters.merge({:order=>"byDate"})
