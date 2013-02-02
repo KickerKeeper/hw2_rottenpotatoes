@@ -22,7 +22,7 @@ class MoviesController < ApplicationController
     else
       @movies = Movie.all
       @all_ratings.each do |rating|
-        @rating_hash_container << {:rating => rating, :rating_selected => false}
+        @rating_hash_container << {:rating => rating, :rating_selected => true}
       end
     end
 
