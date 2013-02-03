@@ -53,7 +53,8 @@ class MoviesController < ApplicationController
       end
     end
 
-    @temp = session[:ratings]
+    session[:ratings] = params[:ratings]
+    session[:order] = params[:order]
     
     @title_path = request.query_parameters.merge({:order=>"byTitle"})
     @release_path = request.query_parameters.merge({:order=>"byDate"})

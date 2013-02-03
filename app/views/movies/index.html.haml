@@ -1,5 +1,6 @@
 -#  This file is app/views/movies/index.html.haml
 %h1 All Movies
+%span= @temp
 = form_tag movies_path, :id => 'ratings_form', :method => :get do
   Include: 
   - @rating_hash_container.each do |rating|
